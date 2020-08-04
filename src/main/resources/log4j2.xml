@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<Configuration s="">-->
+<Configuration status="WARN" monitorInterval="30">
+    <Appenders>
+        <!--控制台日志）-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern=" [%-5level] %d{yyyy:MM:dd HH:mm:ss.SSS} [%t] [%C{3}:%L]:  %m%n"/>
+        </Console>
+        <!--这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFile" fileName="/software/project/paas/project/logs/scene-app.log"
+                     filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern=" [%-5level] %d{yyyy:MM:dd HH:mm:ss.SSS} [%t] [%F:%L]:  %m%n"/>
+            <SizeBasedTriggeringPolicy size="100MB"/>
+        </RollingFile>
+        <RollingFile name="RollingFileError" fileName="/software/project/paas/project/logs/scene-error.log"
+                     filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%-5level] %d{yyyy:MM:dd HH:mm:ss.SSS} [%t] [%F:%L]:  %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="Info">
+            <!--过滤掉一些无用的DEBUG信息-->
+            <logger name="org.springframework" level="INFO"/>
+            <logger name="org.mybatis" level="INFO"/>
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFile"/>
+            <appender-ref ref="RollingFileError"/>
+        </Root>
+    </Loggers>
+</Configuration>
